@@ -1,0 +1,27 @@
+# facade-quantities-web
+
+> A static browser app that gives rough pre-survey quantities of a building's exterior walls, roof and scaffold from the PLATEAU 3D city models of Japan (MLIT). Every number is an estimate before a site survey, not a measurement. Source: 国土交通省 PLATEAU を加工して作成. Base map: 地理院タイル (GSI).
+
+## Use the app
+- Open the page, then either type an address (it is sent to the GSI address search, https://msearch.gsi.go.jp/address-search/AddressSearch?q=, no key) or click one building on the 3D map.
+- The URL holds the state, so a URL reopens the same screen: `?id=<gml_id>&lat=<deg>&lon=<deg>&offset=<m>&margin=<m>&lod=1|2&city=<5-digit code>&qwall=<m2>&qroof=<m2>&qscaffold=<m2>`. Only `lat`+`lon` (or `id` with a nearby `lat`+`lon`) are needed; the rest have defaults (offset 0.9, margin 1, lod 2, city 13107 = Sumida-ku, Tokyo).
+- Results can be saved as JSON, CSV and a one-page Markdown summary.
+
+## What is computed (per LOD1 and LOD2, and their difference)
+- Exterior wall area total and by facing (N/E/S/W), before and after removing walls that touch a neighbour (opposite normals within 3°, planes within 0.15 m).
+- Roof area, footprint perimeter, geometry height, storeys (attribute).
+- Scaffold area = L × (H + margin); L = the footprint outline offset outwards by `offset` (mitred corners), minus edges touching a neighbour.
+- Comparison with a quote: ratio = quote / estimate (estimate = LOD2 if present, else LOD1); estimate range = [min(candidates) × 0.9, max(candidates) × 1.1], candidates = LOD1 and LOD2 values (scaffold also with offset ±0.3 m and margin ±0.5 m).
+
+## The same computation outside the browser (facade-quantities package)
+- CLI: `node facade-quantities/dist/src/cli.js --lat 35.69816 --lon 139.79695 --format md` ; `--id <gml_id> --lat .. --lon ..` ; `--bbox west,south,east,north` (CSV).
+- MCP server (stdio): `node facade-quantities/dist/src/mcp.js`. Tools:
+  - `facade_at_point` {lat, lon, cityCode?, lods?, scaffoldOffset?, scaffoldMargin?, format?: json|md}: the building standing at a point.
+  - `facade_by_id` {id, hintLat?, hintLon?, cityCode?, lods?, scaffoldOffset?, scaffoldMargin?, format?}: one building by PLATEAU gml_id.
+  - `facade_in_bbox` {west, south, east, north, cityCode?, lods?, limit?, format?: csv|json}: all buildings in a box.
+- Library: `computeQuantities(meshes, { scaffoldOffset, scaffoldMargin })` on triangle soups in local metres (x east, y north, z up); runs in browsers and Node.
+
+## Limits
+- Box (LOD1) and roof (LOD2) shapes do not contain bay windows, balconies or eaves; LOD3 openings (windows/doors) are not separated.
+- Only cities with PLATEAU building 3D Tiles; the default and tested city is Sumida-ku (13107).
+- No keys, no paid APIs, no Cesium ion. Nothing is sent anywhere except the tile downloads from PLATEAU's public servers and the typed address to GSI.

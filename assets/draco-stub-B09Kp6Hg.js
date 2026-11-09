@@ -1,0 +1,1 @@
+function e(){throw Error(`draco3d (Node build) is not available in the browser; pass dracoModule`)}var t={createDecoderModule:e};export{e as createDecoderModule,t as default};
