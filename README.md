@@ -4,7 +4,7 @@
 
 - 開く: https://driedsandwich.github.io/plateau-facade-quantities/
 - 現地調査の前の目安です。実測ではありません（箱の形では出窓・バルコニー・庇は入りません。値がありえない時は警告を出します）。
-- 画面は試作の土台です。見た目はこれから変わります。
+- 画面は、推奨の見本（地球儀）で仮に組んだ試作です。見た目はまだ変わります。
 
 ## 使い方
 
@@ -25,4 +25,4 @@ AI やエージェント向けの説明は [llms.txt](llms.txt) にあります�
 ## ライセンス
 
 - このアプリ：MIT（[LICENSE](LICENSE)）。
-- 同梱の外の部品：CesiumJS（Apache-2.0）・Draco の復号器（Apache-2.0）。許諾の文は [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES/) にあります。
+- 同梱の外の部品：CesiumJS（Apache-2.0）・Draco の復号器（Apache-2.0）・字体 Noto Sans JP（SIL Open Font License 1.1）。許諾の文は [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES/) にあります。
